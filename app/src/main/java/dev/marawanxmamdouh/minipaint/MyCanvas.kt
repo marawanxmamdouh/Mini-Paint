@@ -1,10 +1,7 @@
 package dev.marawanxmamdouh.minipaint
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -13,6 +10,7 @@ import androidx.core.content.res.ResourcesCompat
 private lateinit var extraCanvas: Canvas
 private lateinit var extraBitmap: Bitmap
 private const val STROKE_WIDTH = 12f
+private lateinit var frame: Rect
 
 class MyCanvas(context: Context) : View(context) {
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
@@ -47,11 +45,16 @@ class MyCanvas(context: Context) : View(context) {
         extraBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         extraCanvas = Canvas(extraBitmap)
         extraCanvas.drawColor(backgroundColor)
+
+        // Calculate a rectangular frame around the picture.
+        val inset = 40
+        frame = Rect(inset, inset, width - inset, height - inset)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
+        canvas.drawRect(frame, paint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
